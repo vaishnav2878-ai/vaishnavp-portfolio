@@ -5,7 +5,7 @@ import BlurText from "./BlurText";
 import TrueFocus from "./TrueFocus";
 import Lanyard from "./Lanyard";
 import Link from "next/link";
-import { ArrowRight, Mail } from "lucide-react";
+import { ArrowRight, Mail, FileText } from "lucide-react";
 
 export default function Hero() {
   return (
@@ -74,10 +74,18 @@ export default function Hero() {
               </Link>
 
               <Link
-                href="/contact"
+                href="/resume"
                 className="group inline-flex items-center gap-2 rounded-full border border-white/20 bg-white/5 px-6 py-3.5 text-xs sm:text-sm font-semibold uppercase tracking-wider text-white transition-all duration-300 hover:border-white hover:bg-white/10 active:scale-95"
               >
-                <Mail size={16} className="text-gray-400 group-hover:text-white" />
+                <FileText size={16} className="text-gray-400 transition-colors group-hover:text-white" />
+                <span>View Resume</span>
+              </Link>
+
+              <Link
+                href="/contact"
+                className="group inline-flex items-center gap-2 rounded-full border border-white/10 bg-white/[0.02] px-6 py-3.5 text-xs sm:text-sm font-semibold uppercase tracking-wider text-gray-300 transition-all duration-300 hover:border-white/30 hover:bg-white/5 hover:text-white active:scale-95"
+              >
+                <Mail size={16} className="text-gray-400 transition-colors group-hover:text-white" />
                 <span>Contact Me</span>
               </Link>
             </div>

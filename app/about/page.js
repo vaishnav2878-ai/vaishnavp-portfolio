@@ -8,6 +8,7 @@ import {
   Terminal,
   Wrench,
   Sparkles,
+  FileText,
 } from "lucide-react";
 
 import Navbar from "@/components/Navbar";
@@ -136,17 +137,27 @@ export default function AboutPage() {
                 hands-on development.
               </p>
 
-              {/* Link to Contact */}
-              <Link
-                href="/contact"
-                className="group mt-6 sm:mt-8 inline-flex items-center gap-2 rounded-full border border-white/20 bg-white/5 px-5 py-3 text-xs sm:text-sm font-semibold uppercase tracking-wider transition duration-300 hover:border-white hover:bg-white hover:text-black active:scale-95"
-              >
-                <span>Let&apos;s connect</span>
-                <ArrowUpRight
-                  size={16}
-                  className="transition-transform duration-300 group-hover:translate-x-1 group-hover:-translate-y-1"
-                />
-              </Link>
+              {/* Action Links */}
+              <div className="mt-6 sm:mt-8 flex flex-wrap items-center gap-3">
+                <Link
+                  href="/resume"
+                  className="group inline-flex items-center gap-2 rounded-full bg-white px-5 py-3 text-xs sm:text-sm font-semibold uppercase tracking-wider text-black transition duration-300 hover:bg-gray-200 active:scale-95 shadow-[0_0_20px_rgba(255,255,255,0.25)]"
+                >
+                  <FileText size={16} />
+                  <span>View Resume</span>
+                </Link>
+
+                <Link
+                  href="/contact"
+                  className="group inline-flex items-center gap-2 rounded-full border border-white/20 bg-white/5 px-5 py-3 text-xs sm:text-sm font-semibold uppercase tracking-wider text-white transition duration-300 hover:border-white hover:bg-white/10 active:scale-95"
+                >
+                  <span>Let&apos;s connect</span>
+                  <ArrowUpRight
+                    size={16}
+                    className="transition-transform duration-300 group-hover:translate-x-1 group-hover:-translate-y-1"
+                  />
+                </Link>
+              </div>
             </div>
 
             {/* Current focus card */}

@@ -4,15 +4,18 @@ import { useState, useEffect } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { Menu, X } from "lucide-react";
+import { useLenis } from "lenis/react";
 
 export default function Navbar() {
   const [menuOpen, setMenuOpen] = useState(false);
   const pathname = usePathname();
+  const lenis = useLenis();
 
   const navLinks = [
     { name: "Home", href: "/" },
     { name: "About", href: "/about" },
     { name: "Skills", href: "/about#skills" },
+    { name: "Resume", href: "/resume" },
     { name: "Contact", href: "/contact" },
   ];
 
@@ -31,13 +34,16 @@ export default function Navbar() {
   useEffect(() => {
     if (menuOpen) {
       document.body.style.overflow = "hidden";
+      lenis?.stop();
     } else {
       document.body.style.overflow = "";
+      lenis?.start();
     }
     return () => {
       document.body.style.overflow = "";
+      lenis?.start();
     };
-  }, [menuOpen]);
+  }, [menuOpen, lenis]);
 
   // Close menu on route change using React's recommended state adjustment pattern
   const [prevPathname, setPrevPathname] = useState(pathname);
@@ -48,7 +54,7 @@ export default function Navbar() {
 
   return (
     <>
-      <header className="fixed top-3 sm:top-5 left-1/2 z-50 w-[calc(100%-1.5rem)] sm:w-[calc(100%-2rem)] max-w-5xl -translate-x-1/2">
+      <header className="fixed top-3 sm:top-5 left-1/2 z-50 w-[calc(100%-1.5rem)] sm:w-[calc(100%-2rem)] max-w-5xl -translate-x-1/2 print:hidden">
         <nav
           aria-label="Main Navigation"
           className="flex items-center justify-between rounded-full border border-white/15 bg-black/80 px-4 py-2.5 sm:px-6 sm:py-3.5 text-sm text-white shadow-2xl shadow-black/60 backdrop-blur-xl"
@@ -128,6 +134,7 @@ export default function Navbar() {
         {/* Mobile dropdown menu */}
         {menuOpen && (
           <div
+            data-lenis-prevent
             className="mt-2.5 flex flex-col gap-1.5 rounded-3xl border border-white/15 bg-black/95 p-4 shadow-2xl backdrop-blur-2xl md:hidden animate-in fade-in slide-in-from-top-4 duration-200"
           >
             {navLinks.map((link) => {

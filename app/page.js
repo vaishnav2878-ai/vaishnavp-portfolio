@@ -1,7 +1,7 @@
 import Navbar from "@/components/Navbar";
 import Hero from "@/components/Hero";
 import Link from "next/link";
-import { ArrowRight, Code2, Database, Layers, Sparkles } from "lucide-react";
+import { ArrowRight, Code2, Database, Layers, Sparkles, FileText } from "lucide-react";
 
 export default function Home() {
   const highlights = [
@@ -106,6 +106,14 @@ export default function Home() {
                 size={16}
                 className="transition-transform group-hover:translate-x-1"
               />
+            </Link>
+
+            <Link
+              href="/resume"
+              className="group inline-flex items-center gap-2 rounded-full border border-white/20 bg-white/5 px-6 py-3.5 text-xs sm:text-sm font-semibold uppercase tracking-wider text-white transition hover:border-white hover:bg-white/10 active:scale-95"
+            >
+              <FileText size={16} className="text-gray-400 group-hover:text-white" />
+              <span>View Resume</span>
             </Link>
 
             <Link
