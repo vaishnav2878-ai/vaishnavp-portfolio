@@ -54,21 +54,21 @@ export default function Navbar() {
 
   return (
     <>
-      <header className="fixed top-3 sm:top-5 left-1/2 z-50 w-[calc(100%-1.5rem)] sm:w-[calc(100%-2rem)] max-w-5xl -translate-x-1/2 print:hidden">
+      <header className="fixed top-2.5 sm:top-5 left-1/2 z-50 w-[calc(100%-1.25rem)] sm:w-[calc(100%-2rem)] max-w-5xl -translate-x-1/2 print:hidden">
         <nav
           aria-label="Main Navigation"
-          className="flex items-center justify-between rounded-full border border-white/15 bg-black/80 px-4 py-2.5 sm:px-6 sm:py-3.5 text-sm text-white shadow-2xl shadow-black/60 backdrop-blur-xl"
+          className="flex items-center justify-between rounded-full border border-white/15 bg-black/85 px-3.5 py-2 sm:px-6 sm:py-3.5 text-sm text-white shadow-2xl shadow-black/60 backdrop-blur-xl"
         >
           {/* Logo */}
           <Link
             href="/"
             aria-label="Vaishnav P - Home"
-            className="flex items-center gap-2.5 shrink-0 transition-transform hover:scale-105 active:scale-95"
+            className="flex items-center gap-2 sm:gap-2.5 shrink-0 transition-transform hover:scale-105 active:scale-95"
             onClick={() => setMenuOpen(false)}
           >
             <svg
-              width="28"
-              height="28"
+              width="26"
+              height="26"
               viewBox="0 0 32 32"
               fill="none"
               xmlns="http://www.w3.org/2000/svg"
@@ -80,7 +80,7 @@ export default function Navbar() {
               <circle cx="16.001" cy="27.294" r="4.706" fill="#FFFFFF" />
               <circle cx="27.294" cy="16" r="4.706" fill="#FFFFFF" />
             </svg>
-            <span className="font-semibold tracking-tight text-white text-sm sm:text-base hidden xs:inline-block">
+            <span className="font-semibold tracking-tight text-white text-sm sm:text-base inline-block">
               Vaishnav
             </span>
           </Link>
@@ -91,7 +91,9 @@ export default function Navbar() {
               const isActive =
                 link.href === "/"
                   ? pathname === "/"
-                  : pathname?.startsWith(link.href.split("#")[0]);
+                  : link.href.includes("#")
+                  ? pathname === link.href.split("#")[0]
+                  : pathname === link.href;
 
               return (
                 <Link
@@ -125,9 +127,9 @@ export default function Navbar() {
             onClick={() => setMenuOpen((prev) => !prev)}
             aria-label={menuOpen ? "Close menu" : "Open menu"}
             aria-expanded={menuOpen}
-            className="flex h-10 w-10 items-center justify-center rounded-full border border-white/10 bg-white/5 text-white transition hover:bg-white/15 active:scale-90 md:hidden"
+            className="flex h-9 w-9 sm:h-10 sm:w-10 items-center justify-center rounded-full border border-white/10 bg-white/5 text-white transition hover:bg-white/15 active:scale-90 md:hidden"
           >
-            {menuOpen ? <X size={20} /> : <Menu size={20} />}
+            {menuOpen ? <X size={18} /> : <Menu size={18} />}
           </button>
         </nav>
 
@@ -135,22 +137,24 @@ export default function Navbar() {
         {menuOpen && (
           <div
             data-lenis-prevent
-            className="mt-2.5 flex flex-col gap-1.5 rounded-3xl border border-white/15 bg-black/95 p-4 shadow-2xl backdrop-blur-2xl md:hidden animate-in fade-in slide-in-from-top-4 duration-200"
+            className="mt-2 flex flex-col gap-1 rounded-2xl sm:rounded-3xl border border-white/15 bg-black/95 p-3 sm:p-4 shadow-2xl backdrop-blur-2xl md:hidden animate-in fade-in slide-in-from-top-4 duration-200 max-h-[calc(100svh-5.5rem)] overflow-y-auto overscroll-contain"
           >
             {navLinks.map((link) => {
               const isActive =
                 link.href === "/"
                   ? pathname === "/"
-                  : pathname?.startsWith(link.href.split("#")[0]);
+                  : link.href.includes("#")
+                  ? pathname === link.href.split("#")[0]
+                  : pathname === link.href;
 
               return (
                 <Link
                   key={link.name}
                   href={link.href}
                   onClick={() => setMenuOpen(false)}
-                  className={`flex items-center justify-between rounded-2xl px-5 py-3.5 text-base font-medium transition-colors ${
+                  className={`flex items-center justify-between rounded-xl px-4 py-3 text-sm sm:text-base font-medium transition-colors ${
                     isActive
-                      ? "bg-white/15 text-white"
+                      ? "bg-white/15 text-white font-semibold"
                       : "text-gray-300 hover:bg-white/5 hover:text-white"
                   }`}
                 >
@@ -166,7 +170,7 @@ export default function Navbar() {
               <Link
                 href="/contact"
                 onClick={() => setMenuOpen(false)}
-                className="flex w-full items-center justify-center rounded-full bg-white px-5 py-3.5 text-center text-sm font-semibold uppercase tracking-wider text-black transition-all hover:bg-gray-200 active:scale-95 shadow-[0_0_25px_rgba(255,255,255,0.25)]"
+                className="flex w-full items-center justify-center rounded-full bg-white px-5 py-3 text-center text-xs sm:text-sm font-semibold uppercase tracking-wider text-black transition-all hover:bg-gray-200 active:scale-95 shadow-[0_0_25px_rgba(255,255,255,0.25)]"
               >
                 Get in Touch
               </Link>
