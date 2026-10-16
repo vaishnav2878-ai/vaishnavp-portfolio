@@ -8,29 +8,69 @@ import { useLenis } from "lenis/react";
 
 export default function Navbar() {
   const [menuOpen, setMenuOpen] = useState(false);
+
   const pathname = usePathname();
   const lenis = useLenis();
 
+  // Navigation links
   const navLinks = [
     { name: "Home", href: "/" },
     { name: "About", href: "/about" },
+    { name: "Projects", href: "/#projects" },
     { name: "Skills", href: "/about#skills" },
     { name: "Resume", href: "/resume" },
     { name: "Contact", href: "/contact" },
   ];
 
-  // Close mobile menu on Escape key press
+
+const handleNavClick = (e, link) => {
+  setMenuOpen(false);
+
+  if (link?.name !== "Projects") return;
+
+  if (window.location.pathname === "/") {
+    e.preventDefault();
+
+    const projectsSection = document.getElementById("projects");
+
+    if (!projectsSection) {
+      console.error('Could not find element with id="projects"');
+      return;
+    }
+
+    if (lenis) {
+      lenis.scrollTo(projectsSection, {
+        offset: -100,
+        duration: 1.2,
+      });
+    } else {
+      projectsSection.scrollIntoView({
+        behavior: "smooth",
+        block: "start",
+      });
+    }
+
+    window.history.replaceState(null, "", "/#projects");
+  }
+};
+  // Handle Escape key to close the mobile menu
   useEffect(() => {
     const handleKeyDown = (e) => {
-      if (e.key === "Escape") setMenuOpen(false);
+      if (e.key === "Escape") {
+        setMenuOpen(false);
+      }
     };
+
     if (menuOpen) {
       window.addEventListener("keydown", handleKeyDown);
     }
-    return () => window.removeEventListener("keydown", handleKeyDown);
+
+    return () => {
+      window.removeEventListener("keydown", handleKeyDown);
+    };
   }, [menuOpen]);
 
-  // Prevent background scroll when mobile menu is open
+  // Prevent background scrolling while the mobile menu is open
   useEffect(() => {
     if (menuOpen) {
       document.body.style.overflow = "hidden";
@@ -39,32 +79,52 @@ export default function Navbar() {
       document.body.style.overflow = "";
       lenis?.start();
     }
+
     return () => {
       document.body.style.overflow = "";
       lenis?.start();
     };
   }, [menuOpen, lenis]);
 
-  // Close menu on route change using React's recommended state adjustment pattern
+  // Close the mobile menu when the route changes
   const [prevPathname, setPrevPathname] = useState(pathname);
+
   if (pathname !== prevPathname) {
     setPrevPathname(pathname);
     setMenuOpen(false);
   }
 
+  // Check whether a navigation link is active
+  const isLinkActive = (link) => {
+    if (link.name === "Home") {
+      return pathname === "/" && !window.location.hash;
+    }
+
+    if (link.name === "Projects") {
+      return pathname === "/" && window.location.hash === "#projects";
+    }
+
+    if (link.href.includes("#")) {
+      return pathname === link.href.split("#")[0];
+    }
+
+    return pathname === link.href;
+  };
+
+  // Render desktop and mobile navigation
   return (
     <>
-      <header className="fixed top-2.5 sm:top-5 left-1/2 z-50 w-[calc(100%-1.25rem)] sm:w-[calc(100%-2rem)] max-w-5xl -translate-x-1/2 print:hidden">
+      <header className="fixed left-1/2 top-2.5 z-50 w-[calc(100%-1.25rem)] max-w-5xl -translate-x-1/2 print:hidden sm:top-5 sm:w-[calc(100%-2rem)]">
         <nav
           aria-label="Main Navigation"
-          className="flex items-center justify-between rounded-full border border-white/15 bg-black/85 px-3.5 py-2 sm:px-6 sm:py-3.5 text-sm text-white shadow-2xl shadow-black/60 backdrop-blur-xl"
+          className="flex items-center justify-between rounded-full border border-white/15 bg-black/85 px-3.5 py-2 text-sm text-white shadow-2xl shadow-black/60 backdrop-blur-xl sm:px-6 sm:py-3.5"
         >
           {/* Logo */}
           <Link
             href="/"
             aria-label="Vaishnav P - Home"
-            className="flex items-center gap-2 sm:gap-2.5 shrink-0 transition-transform hover:scale-105 active:scale-95"
-            onClick={() => setMenuOpen(false)}
+            className="flex shrink-0 items-center gap-2 transition-transform hover:scale-105 active:scale-95 sm:gap-2.5"
+            onClick={handleNavClick}
           >
             <svg
               width="26"
@@ -73,46 +133,49 @@ export default function Navbar() {
               fill="none"
               xmlns="http://www.w3.org/2000/svg"
               aria-hidden="true"
-              className="sm:w-8 sm:h-8"
+              className="sm:h-8 sm:w-8"
             >
               <circle cx="4.706" cy="16" r="4.706" fill="#FFFFFF" />
               <circle cx="16.001" cy="4.706" r="4.706" fill="#FFFFFF" />
               <circle cx="16.001" cy="27.294" r="4.706" fill="#FFFFFF" />
               <circle cx="27.294" cy="16" r="4.706" fill="#FFFFFF" />
             </svg>
-            <span className="font-semibold tracking-tight text-white text-sm sm:text-base inline-block">
+
+            <span className="inline-block text-sm font-semibold tracking-tight text-white sm:text-base">
               Vaishnav
             </span>
           </Link>
 
           {/* Desktop navigation links */}
-          <div className="hidden md:flex items-center gap-1 lg:gap-2">
-            {navLinks.map((link) => {
-              const isActive =
-                link.href === "/"
-                  ? pathname === "/"
-                  : link.href.includes("#")
-                  ? pathname === link.href.split("#")[0]
-                  : pathname === link.href;
+          {/* Desktop navigation links */}
+<div className="hidden items-center gap-1 md:flex lg:gap-2">
+  {navLinks.map((link) => {
+    const isActive =
+      link.name === "Home"
+        ? pathname === "/"
+        : link.name === "Projects"
+          ? false
+          : pathname === link.href.split("#")[0];
 
-              return (
-                <Link
-                  key={link.name}
-                  href={link.href}
-                  className={`group relative px-4 py-2 text-sm font-medium transition-colors rounded-full ${
-                    isActive
-                      ? "text-white bg-white/10"
-                      : "text-gray-300 hover:text-white hover:bg-white/5"
-                  }`}
-                >
-                  <span className="relative z-10">{link.name}</span>
-                </Link>
-              );
-            })}
-          </div>
+    return (
+      <Link
+        key={link.name}
+        href={link.href}
+        onClick={(e) => handleNavClick(e, link)}
+        className={`group relative rounded-full px-4 py-2 text-sm font-medium transition-colors ${
+          isActive
+            ? "bg-white/10 text-white"
+            : "text-gray-300 hover:bg-white/5 hover:text-white"
+        }`}
+      >
+        <span className="relative z-10">{link.name}</span>
+      </Link>
+    );
+  })}
+</div>
 
           {/* Desktop action button */}
-          <div className="hidden md:flex items-center gap-3">
+          <div className="hidden items-center gap-3 md:flex">
             <Link
               href="/contact"
               className="rounded-full bg-white px-5 py-2 text-xs font-semibold uppercase tracking-wider text-black shadow-[0_0_25px_rgba(255,255,255,0.35)] transition-all duration-300 hover:bg-gray-200 hover:shadow-[0_0_35px_rgba(255,255,255,0.55)] active:scale-95"
@@ -121,13 +184,13 @@ export default function Navbar() {
             </Link>
           </div>
 
-          {/* Mobile menu toggle button */}
+          {/* Mobile menu toggle */}
           <button
             type="button"
             onClick={() => setMenuOpen((prev) => !prev)}
             aria-label={menuOpen ? "Close menu" : "Open menu"}
             aria-expanded={menuOpen}
-            className="flex h-9 w-9 sm:h-10 sm:w-10 items-center justify-center rounded-full border border-white/10 bg-white/5 text-white transition hover:bg-white/15 active:scale-90 md:hidden"
+            className="flex h-9 w-9 items-center justify-center rounded-full border border-white/10 bg-white/5 text-white transition hover:bg-white/15 active:scale-90 md:hidden sm:h-10 sm:w-10"
           >
             {menuOpen ? <X size={18} /> : <Menu size={18} />}
           </button>
@@ -137,40 +200,24 @@ export default function Navbar() {
         {menuOpen && (
           <div
             data-lenis-prevent
-            className="mt-2 flex flex-col gap-1 rounded-2xl sm:rounded-3xl border border-white/15 bg-black/95 p-3 sm:p-4 shadow-2xl backdrop-blur-2xl md:hidden animate-in fade-in slide-in-from-top-4 duration-200 max-h-[calc(100svh-5.5rem)] overflow-y-auto overscroll-contain"
+            className="mt-2 flex max-h-[calc(100svh-5.5rem)] flex-col gap-1 overflow-y-auto overscroll-contain rounded-2xl border border-white/15 bg-black/95 p-3 shadow-2xl backdrop-blur-2xl animate-in fade-in slide-in-from-top-4 duration-200 sm:rounded-3xl sm:p-4 md:hidden"
           >
-            {navLinks.map((link) => {
-              const isActive =
-                link.href === "/"
-                  ? pathname === "/"
-                  : link.href.includes("#")
-                  ? pathname === link.href.split("#")[0]
-                  : pathname === link.href;
+            {navLinks.map((link) => (
+              <Link
+                key={link.name}
+                href={link.href}
+                onClick={(e) => handleNavClick(e, link)}
+                className="flex items-center justify-between rounded-xl px-4 py-3 text-sm font-medium text-gray-300 transition-colors hover:bg-white/5 hover:text-white sm:text-base"
+              >
+                <span>{link.name}</span>
+              </Link>
+            ))}
 
-              return (
-                <Link
-                  key={link.name}
-                  href={link.href}
-                  onClick={() => setMenuOpen(false)}
-                  className={`flex items-center justify-between rounded-xl px-4 py-3 text-sm sm:text-base font-medium transition-colors ${
-                    isActive
-                      ? "bg-white/15 text-white font-semibold"
-                      : "text-gray-300 hover:bg-white/5 hover:text-white"
-                  }`}
-                >
-                  <span>{link.name}</span>
-                  {isActive && (
-                    <span className="h-1.5 w-1.5 rounded-full bg-white" />
-                  )}
-                </Link>
-              );
-            })}
-
-            <div className="pt-2 border-t border-white/10 mt-1">
+            <div className="mt-1 border-t border-white/10 pt-2">
               <Link
                 href="/contact"
-                onClick={() => setMenuOpen(false)}
-                className="flex w-full items-center justify-center rounded-full bg-white px-5 py-3 text-center text-xs sm:text-sm font-semibold uppercase tracking-wider text-black transition-all hover:bg-gray-200 active:scale-95 shadow-[0_0_25px_rgba(255,255,255,0.25)]"
+                onClick={handleNavClick}
+                className="flex w-full items-center justify-center rounded-full bg-white px-5 py-3 text-center text-xs font-semibold uppercase tracking-wider text-black shadow-[0_0_25px_rgba(255,255,255,0.25)] transition-all hover:bg-gray-200 active:scale-95 sm:text-sm"
               >
                 Get in Touch
               </Link>
@@ -179,12 +226,12 @@ export default function Navbar() {
         )}
       </header>
 
-      {/* Backdrop overlay for mobile menu */}
+      {/* Mobile menu backdrop */}
       {menuOpen && (
         <div
           aria-hidden="true"
           onClick={() => setMenuOpen(false)}
-          className="fixed inset-0 z-40 bg-black/60 backdrop-blur-sm md:hidden animate-in fade-in duration-200"
+          className="fixed inset-0 z-40 bg-black/60 backdrop-blur-sm animate-in fade-in duration-200 md:hidden"
         />
       )}
     </>

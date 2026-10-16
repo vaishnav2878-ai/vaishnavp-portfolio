@@ -1,5 +1,6 @@
 import Navbar from "@/components/Navbar";
 import Hero from "@/components/Hero";
+import Projects from "@/components/Projects";
 import Link from "next/link";
 import { ArrowRight, Code2, Database, Layers, Sparkles, FileText } from "lucide-react";
 
@@ -125,6 +126,8 @@ export default function Home() {
           </div>
         </div>
       </section>
+            {/* Projects Section */}
+      <Projects />
 
       {/* Footer */}
       <footer className="border-t border-white/10 px-5 py-8 text-center text-xs text-gray-500">
